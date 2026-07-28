@@ -1,0 +1,1801 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=28mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{booktabs,array,microtype}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[hidelinks]{hyperref}
+\usepackage{enumitem}
+\setlist{nosep}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newcommand{\N}{\mathbb N}
+\newcommand{\Q}{\mathbb Q}
+\newcommand{\Z}{\mathbb Z}
+\newcommand{\C}{\mathbb C}
+\newcommand{\ph}{\varphi}
+\DeclareMathOperator{\Res}{Res}
+\numberwithin{equation}{section}
+
+\title{\textbf{Coefficient Propagation and Conjugate Obstructions\\
+for Trinomial Factors of Newman Polynomials}\\[3mm]
+\large Local certificates, arithmetic norm divisors, and degree obstructions}
+\author{Kende Daniel Rethelyi}
+\date{28 July 2026}
+
+\begin{document}
+\maketitle
+
+\begin{center}
+\small
+\textbf{Autonomous AI research notice.}
+This manuscript was researched, critically revised, and generated
+autonomously through an AI Researcher--Critic workflow.
+\end{center}
+\medskip
+
+\begin{abstract}
+The unfair $0$--$1$ polynomial conjecture asks whether monic polynomials with
+nonnegative real coefficients must themselves be $0$--$1$ polynomials whenever
+their product is a $0$--$1$ polynomial.  In a normalized nonnegative
+factorization of a Newman polynomial, we study a prospective trinomial factor
+$A_a(x)=1+a x^u+x^v$.  Coefficient propagation settles the cases in
+which the two gaps are comparable by divisibility and forces every genuinely
+fractional coefficient into $0<a<1/2$.  Algebraic integrality and the
+golden-ratio annulus for zeros of Newman polynomials give explicit bounds on
+all conjugates.  The complete norm polynomial is an integer divisor of the
+product, yielding finite searches at fixed algebraic degree.  A unit-circle
+crossing argument excludes quadratic coefficients when the smaller gap is
+$2$.  Finally, an exact rational Sturm--Schur sieve and a parity-block
+expansion of the forced cofactor recurrence exclude every cubic coefficient
+in every remaining smaller-gap-$2$ case, with no product-degree cap.  An exact
+quartic norm sieve and an expanded parity-block certificate also exclude every
+quartic coefficient, giving under these factorization hypotheses the
+algebraic-degree lower bound $[\Q(a):\Q]\ge5$.  The finite cubic catalog has
+$126$ entries.  Exact algebraic signs settle $v=5,7,\ldots,21$, while rational
+interval bounds for alternating binomial tails prove uniform positivity
+followed by a negative coefficient for every odd $v\ge23$.  For quartics the
+exact sieve retains $6{,}977$ minimal polynomials and $6{,}982$ target roots;
+the corresponding negative coefficient occurs no later than degree
+$110v+100$.  Independently, a unit-disk/Pringsheim argument proves eventual
+negativity of the forced series for every real $a>0$.  A safe-lattice theorem
+proves that the only possible coefficient-one escape cannot first occur before
+degree $13v+4$ at an odd index or $14v+2$ at an even index.  These are
+structural restrictions, not a proof of the full conjecture: the safe-lattice
+theorem does not rule out a later escape, and the degree-$5$ and higher cases
+remain open.
+\end{abstract}
+
+\section{Introduction}
+
+A \emph{Newman polynomial} has coefficients in $\{0,1\}$ and constant term
+$1$.  We consider the following open problem.
+
+\medskip
+\noindent\textbf{Unfair $0$--$1$ polynomial conjecture.}
+If $A,B\in\mathbb R[x]$ are monic with nonnegative coefficients and $AB$ is a
+$0$--$1$ polynomial, then both $A$ and $B$ are $0$--$1$ polynomials.
+\medskip
+
+The conjecture is equivalent to a factorization question for finitely
+supported probability measures.  The arithmetic-progression case goes back
+to Krasner and Ranulac~\cite{KR}.  Ghidelli treated the first difficult
+trinomial $1+a x^2+x^5$ by recurrence and root analysis~\cite{Ghidelli}, and
+Hare developed recursive symbolic methods for bounded-degree candidate
+factors~\cite{Hare}.  The general conjecture remains open.
+
+This paper isolates a uniform local coefficient mechanism and joins it to the
+arithmetic theory of Newman divisors.  Throughout, the factor statements concern
+normalized factorizations with nonnegative real cofactors.  The principal
+conclusions are:
+\begin{enumerate}
+\item divisibility-comparable gaps force fairness;
+\item a fractional middle coefficient is an irrational algebraic integer in
+      $(0,1/2)$;
+\item every conjugate satisfies explicit gap-dependent bounds;
+\item the full norm polynomial is an effectively computable integer divisor;
+\item smaller gap $2$ excludes algebraic degrees $2$, $3$, and $4$ without a
+      product-degree restriction;
+\item in the unrestricted smaller-gap-$2$ recurrence, a first coefficient-one
+      escape is impossible below $13v+4$ at odd indices and $14v+2$ at even
+      indices.
+\end{enumerate}
+The last assertion is an analytic theorem in the same normalized
+nonnegative-factorization setting, accompanied by reproducible exact identity
+and symbolic sign audits.  Its artifacts include source code, exact root
+records, exact algebraic signs, rational interval margins, alternating-tail
+bounds, and standalone checkers.
+No priority claim is made for the general propagation or norm-divisor
+mechanisms.
+
+\section{Normalization and the recurrence}
+
+\begin{lemma}[Endpoint normalization]\label{lem:normalization}
+Let $A,B\in\mathbb R[x]$ be nonzero and monic with nonnegative coefficients,
+and suppose $C=AB$ is a $0$--$1$ polynomial.  After removing powers of $x$
+from $A$ and $B$, both constant coefficients are $1$, and every coefficient
+of $A$ and $B$ belongs to $[0,1]$.
+\end{lemma}
+\begin{proof}
+Let $a_0,b_0$ be the first nonzero coefficients after removing the powers of
+$x$.  The first nonzero coefficient of $C$ is $a_0b_0=1$.  The coefficient in
+degree $\deg B$ contains the nonnegative summand $a_0$, so $a_0\leq1$;
+similarly $b_0\leq1$.  Hence $a_0=b_0=1$.  Multiplication by the constant
+coefficient of the other factor makes each coefficient of $A$ or $B$ a
+nonnegative summand of a coefficient of $C$, and hence at most $1$.
+\end{proof}
+
+If one normalized factor is already a $0$--$1$ polynomial, low-to-high
+coefficient comparison makes the other factor integral; Lemma
+\ref{lem:normalization} then makes it a $0$--$1$ polynomial as well.
+
+For
+\[
+ A_a(x)=1+a x^u+x^v,\qquad 0<u<v,
+\]
+write $B(x)=\sum_{n\ge0}b_nx^n$ and $C(x)=\sum_{n\ge0}c_nx^n$, extending
+$b_n=0$ outside the degree of $B$.  Then
+\begin{equation}\label{eq:recurrence}
+ c_n=b_n+a b_{n-u}+b_{n-v}\in\{0,1\},\qquad b_n\ge0,
+\end{equation}
+with $b_0=1$ and $b_j=0$ for $j<0$.  Whenever one summand in
+\eqref{eq:recurrence} is positive, $c_n$ is forced to be $1$.
+
+\section{Local propagation along arithmetic rays}
+
+\begin{lemma}[Arithmetic-ray overflow]\label{lem:overflow}
+Let $r\ge1$, $k\ge2$, and $0<a<1$.  Suppose a polynomial or formal series
+begins
+\[
+ A(x)=1+a x^r+x^{kr}+O(x^{kr+1}),
+\]
+with no other nonzero coefficient through degree $kr$.  There is no series
+$B=\sum_{j\ge0}b_jx^j$ with $b_0=1$, $b_j\ge0$, for which all coefficients of
+$AB$ through degree $kr$ lie in $\{0,1\}$.
+\end{lemma}
+\begin{proof}
+At degrees $r,2r,\ldots,(k-1)r$, positivity forces the product coefficient to
+be $1$, and therefore
+\[
+ b_{jr}=1-a b_{(j-1)r}=1-a+a^2-\cdots+(-a)^j
+       =\frac{1-(-a)^{j+1}}{1+a}>0.
+\]
+At degree $kr$, the terminal unit term collides with this positive tail:
+$[x^{kr}](AB)=b_{kr}+a b_{(k-1)r}+b_0>1$.
+\end{proof}
+
+\begin{theorem}[Divisible gaps]\label{thm:divisible}
+Suppose $A_a=1+a x^u+x^v$ occurs in a normalized nonnegative factorization of
+a $0$--$1$ polynomial.  If one of $u$ and $v-u$ divides the other, then
+$a\in\{0,1\}$ and both factors are $0$--$1$ polynomials.
+\end{theorem}
+\begin{proof}
+If $u\mid v$, apply Lemma~\ref{lem:overflow} with $r=u$.  If $(v-u)\mid v$,
+reverse the factorization using $P^*(x)=x^{\deg P}P(x^{-1})$; the reversed
+trinomial is $1+a x^{v-u}+x^v$.  These two alternatives are equivalent to
+comparability of $u$ and $v-u$ by divisibility.  Thus $0<a<1$ is impossible,
+and the observation after Lemma~\ref{lem:normalization} proves the final claim.
+\end{proof}
+
+\begin{theorem}[Universal half-bias obstruction]\label{thm:half}
+If $A_a$ occurs in a normalized nonnegative factorization of a $0$--$1$
+polynomial and $0<a<1$, then $a\le1/2$.
+\end{theorem}
+\begin{proof}
+After reversal assume $u\le v-u$.  Equality is covered by Theorem
+\ref{thm:divisible}, so $2u<v$.  Recurrence~\eqref{eq:recurrence} gives
+$b_u=1-a$ and $b_{2u}=1-a+a^2$.  At degree $v$, the unit contribution from
+$x^vb_0$ forces $b_v=b_{v-u}=0$; the next position gives $b_{v+u}=a$.
+Consequently
+\[
+[x^{v+2u}](A_aB)=b_{v+2u}+a b_{v+u}+b_{2u}
+=b_{v+2u}+1-a+2a^2.
+\]
+For $a>1/2$ this exceeds $1$, a contradiction.
+\end{proof}
+
+\begin{proposition}[Forced-ray skeleton]\label{prop:skeleton}
+Assume the hypotheses of Theorem~\ref{thm:half}, with $2u<v$.  By
+Theorem~\ref{thm:divisible}, the feasible fractional case has $u\nmid v$.
+Thus write $v=qu+r$, where $q\ge2$ and $0<r<u$.  Put
+\[
+ S_j(a)=\sum_{k=0}^j(-a)^k,\qquad
+ T_j(a)=\sum_{k=0}^{j-1}(k+1)(-a)^k.
+\]
+Every feasible cofactor satisfies
+\[
+ b_{ju}=S_j(a)\ (0\le j\le q),\quad
+ b_{r+ju}=0\ (0\le j\le q-1),\quad
+ b_{v+ju}=aT_j(a)\ (1\le j\le q),
+\]
+and
+\[
+ T_j(a)=\frac{1-(j+1)(-a)^j+j(-a)^{j+1}}{(1+a)^2}.
+\]
+For $0<a\le1/2$, every $T_j(a)$ is nonnegative; for $0<a<1/2$ it is
+positive.  Thus this paired ray gives no stronger upper bound before the next
+interaction at degree $2v$.
+\end{proposition}
+\begin{proof}
+The first identity is the recurrence below degree $v$.  At degree $v$ one has
+$b_{v-u}=0$.  If a zero $b_{r+ju}=0$ in this residue class had
+$b_{r+(j-1)u}>0$, then the recurrence below degree $v$ would force
+$a b_{r+(j-1)u}=1$, hence $b_{r+(j-1)u}=1/a>1$, contrary to
+Lemma~\ref{lem:normalization}.  Backward induction gives the displayed zero
+chain.  Put $d_j=b_{v+ju}$ and $d_0=0$.  Since $S_j(a)>0$,
+the product coefficient at $v+ju$ is $1$, whence
+$d_j=a(S_{j-1}(a)-d_{j-1})$.  Induction yields $d_j=aT_j(a)$, and
+differentiating a finite geometric sum gives the closed form.  For
+$0<a<1/2$, the magnitudes $(k+1)a^k$ decrease strictly, so the finite
+alternating sum is positive.  At $a=1/2$ they are nonincreasing and the only
+zero case is $T_2(1/2)=0$; hence nonnegativity holds on the closed interval.
+\end{proof}
+
+\section{Algebraic integrality and the norm divisor}
+
+\begin{theorem}[Algebraic integrality]\label{thm:integral}
+Let $C\in\Z[x]$ be monic and $C=AB$ with $A,B\in\mathbb R[x]$ monic.  Every
+coefficient of $A$ and $B$ is an algebraic integer.  In particular, a rational
+coefficient is an integer.
+\end{theorem}
+\begin{proof}
+Every root of either factor is a root of the monic integer polynomial $C$ and
+is therefore an algebraic integer.  Factor coefficients are elementary
+symmetric polynomials in these roots.  A rational algebraic integer is an
+ordinary integer.
+\end{proof}
+
+Thus a genuinely fractional coefficient satisfies
+\begin{equation}\label{eq:fractional}
+ 0<a<\frac12,\qquad a\text{ is an irrational algebraic integer}.
+\end{equation}
+
+\begin{theorem}[Conjugate and norm sieve]\label{thm:norm}
+Suppose $A_a(x)=1+a x^u+x^v$ occurs in a normalized nonnegative factorization
+$C=A_aB$, where $C$ is a Newman polynomial.  Let $a$ have degree $d$, let
+$m_a(t)$ be its minimal polynomial, and put $\ph=(1+\sqrt5)/2$.  For every
+conjugate $\alpha$ of $a$:
+\begin{enumerate}[label=(\alph*)]
+\item $A_\alpha(x)=1+\alpha x^u+x^v$ divides $C$ in $\overline{\Q}[x]$;
+\item
+\begin{equation}\label{eq:Rphi}
+ |\alpha|\le R_\ph(u,v):=
+ \min\{\ph^u+\ph^{u-v},\ \ph^{v-u}+\ph^{-u}\};
+\end{equation}
+\item if $\alpha$ is real, then $\alpha>-\kappa(u,v)$, where
+\begin{equation}\label{eq:kappa}
+ \kappa(u,v)=
+ \left(\frac{v-u}{u}\right)^{u/v}
+ +\left(\frac{u}{v-u}\right)^{(v-u)/v}.
+\end{equation}
+\end{enumerate}
+Furthermore,
+\begin{equation}\label{eq:norm}
+ H_a(x):=\prod_\alpha(1+\alpha x^u+x^v)
+ =\Res_t\bigl(m_a(t),1+t x^u+x^v\bigr)
+\end{equation}
+belongs to $\Z[x]$, divides $C$ in $\Z[x]$, and has degree $dv$.
+Consequently $\deg C\ge dv$.
+\end{theorem}
+\begin{proof}
+Division of $C$ by the monic polynomial $A_a$ takes place in $\Q(a)[x]$.
+Applying an embedding $\Q(a)\hookrightarrow\C$ to $C=A_aB$ fixes $C$ and
+proves (a).
+
+Odlyzko and Poonen's zero bound gives
+\begin{equation}\label{eq:annulus}
+ \ph^{-1}<|z|<\ph
+\end{equation}
+for every zero of a Newman polynomial~\cite{OP}.  On $|z|=\ph^{-1}$, the
+strict inequality $|\alpha|\ph^{-u}>1+\ph^{-v}$ would make $\alpha z^u$
+dominate $1+z^v$; Rouch\'e's theorem would place $u$ zeros of $A_\alpha$ in
+the forbidden inner disk.  Hence $|\alpha|\le\ph^u+\ph^{u-v}$.  On
+$|z|=\ph$, the analogous strict inequality would make $A_\alpha$ have only
+$u$ zeros in that circle, whereas all $v$ of its zeros must lie there by (a)
+and~\eqref{eq:annulus}.  This gives the other bound in~\eqref{eq:Rphi}.
+
+For (c), write $\alpha=-s$ with $s>0$.  The function
+$f(x)=1-sx^u+x^v$ on $x>0$ first acquires a positive zero at tangency.
+Solving $f(x)=f'(x)=0$ gives $s=\kappa(u,v)$.  Thus for
+$s\ge\kappa(u,v)$, $A_{-s}$ has a positive real zero.  Since $A_{-s}$ divides
+$C$, that zero would also be a zero of $C$, impossible because $C$ has
+nonnegative coefficients and $C(0)=1$.  Notice that no coefficient-sign claim
+about $A_{-s}$ is used.
+
+Distinct conjugate trinomials are coprime: their difference is a nonzero
+multiple of $x^u$, and neither vanishes at $0$.  Their product is Galois-fixed
+and has algebraic-integer coefficients, hence lies in $\Z[x]$.  By (a) and
+coprimality it divides $C$ in $\overline{\Q}[x]$, hence in $\Q[x]$; Gauss's
+lemma gives divisibility in $\Z[x]$.  Formula~\eqref{eq:norm} and the degree
+claim follow directly.
+\end{proof}
+
+\section{Effective finiteness at fixed algebraic degree}
+
+\begin{theorem}[Effective finite enumeration]\label{thm:finite}
+Fix $u,v$ and $d$.  There are only finitely many algebraic integers $a$ of
+degree $d$ that can occur in~\eqref{eq:fractional}.  More explicitly, if
+\[
+ m_a(t)=t^d+s_{d-1}t^{d-1}+\cdots+s_0\in\Z[t],
+\]
+and $R=R_\ph(u,v)$, then
+\begin{equation}\label{eq:boxes}
+ |s_{d-k}|\le {d\choose k}R^k,\qquad 1\le k\le d.
+\end{equation}
+Every candidate can therefore be enumerated in finite integer boxes and
+tested against the necessary root and conjugate conditions.  For any fixed
+product-degree cap $D$, existence of a Newman multiple is a finite integer
+feasibility problem for the quotient coefficients.  If $\deg C\le D$, it is
+enough to consider $d\le\lfloor D/v\rfloor$.
+\end{theorem}
+\begin{proof}
+Up to sign, $s_{d-k}$ is the $k$th elementary symmetric function of the $d$
+conjugates.  It has exactly ${d\choose k}$ summands, each of modulus at most
+$R^k$, which proves~\eqref{eq:boxes}.  The coefficient boxes are finite.  For
+a fixed candidate $H_a$ and cap $D$, write $C=H_aQ$ with
+$\deg Q\le D-dv$.  Since $H_a(0)=C(0)=1$, one has $q_0=1$, and low-to-high
+coefficient recursion
+\[
+ q_n=c_n-\sum_{i=1}^n h_iq_{n-i}
+\]
+shows inductively that every $q_n$ is integral.  Equating the finitely many
+coefficients and requiring each coefficient of $C$ to lie in $\{0,1\}$ then
+gives the stated finite integer system.
+The degree restriction follows from $dv\le\deg C$.
+\end{proof}
+
+\section{The smaller-gap-two quadratic case}
+
+\begin{lemma}\label{lem:kappatwo}
+For every integer $v\ge5$ one has $\kappa(2,v)<2$.
+\end{lemma}
+\begin{proof}
+Put $p=2/v$ and $r=p/(1-p)=2/(v-2)$.  Then $0<r\le2/3$ and
+\[
+ \kappa(2,v)=r^{-p}+r^{1-p}=(1+r)r^{-r/(1+r)}=:K(r).
+\]
+Direct differentiation gives
+\[
+ \frac{d}{dr}\log K(r)=-\frac{\log r}{(1+r)^2}>0
+ \qquad(0<r<1).
+\]
+Hence $K(r)\le K(2/3)=\frac53(3/2)^{2/5}<2$.  The final inequality is
+equivalent, after taking fifth powers, to
+$9/4<(6/5)^5$, i.e. $28125<31104$.
+\end{proof}
+
+\begin{proposition}[Unique coarse quadratic survivor]\label{prop:quadratic}
+Suppose $\min\{u,v-u\}=2$.  If a genuinely fractional coefficient $a$ is
+quadratic, then necessarily $a=(3-\sqrt5)/2$.
+\end{proposition}
+\begin{proof}
+Reverse if necessary, so $u=2\le v-u$.  Theorem~\ref{thm:divisible} removes
+even $v$ and equality, so $v\ge5$ is odd.  Let $a'$ be the other conjugate.
+If the integer norm $aa'$ were negative, then $a'\le-1/a<-2$.  On the other
+hand Theorem~\ref{thm:norm}(c) and Lemma~\ref{lem:kappatwo} give
+$a'>-\kappa(2,v)>-2$, a contradiction.  Thus $a'>0$.  The modulus bound gives
+\[
+ a'\le\ph^2+\ph^{2-v}\le\ph^2+\ph^{-3}
+     =\frac{3\sqrt5-1}{2}<2.855.
+\]
+Writing the minimal polynomial as $t^2-Tt+N$, one obtains
+$0<N=aa'<2$ and $0<T=a+a'<4$.  Hence $N=1$ and $T\le3$.  The only monic
+quadratic with a positive root in $(0,1/2)$ is $t^2-3t+1$.
+\end{proof}
+
+\begin{lemma}[Boundary-root perturbation]\label{lem:boundary}
+Let $v\ge5$ be odd and $0<t<2\sin(\pi/(v-1))$.  Then
+\[
+ g_t(z)=1+z^2+t z^v
+\]
+has exactly two zeros in the open unit disk.
+\end{lemma}
+\begin{proof}
+At $t=0$ the two roots are $\pm i$.  The implicit-function theorem gives an
+analytic branch from $i$ with
+\[
+ z(t)=i-\frac{i^{v-1}}2t-\frac{2v-1}{8}it^2+O(t^3),
+ \qquad
+ |z(t)|^2=1-\frac{v-1}{2}t^2+O(t^3).
+\]
+Thus this branch and its conjugate branch from $-i$ lie inside the unit circle
+for all sufficiently small $t>0$.  They are the only bounded branches: if
+$t_n\to0$ and zeros $z_n$ remain bounded, every limit point solves
+$1+z^2=0$; the two simple implicit branches account for all such zeros.
+Hence, for sufficiently small positive $t$, exactly two zeros lie in the unit
+disk.
+
+It remains to rule out boundary crossings.  If $g_t(e^{i\theta})=0$, then
+multiplication by $e^{-i\theta}$ gives
+\[
+ 2\cos\theta+t e^{i(v-1)\theta}=0.
+\]
+Therefore $(v-1)\theta=k\pi$ and necessarily
+\[
+ t=-2(-1)^k\cos\!\left(\frac{k\pi}{v-1}\right)>0.
+\]
+Because $v-1$ is even, the zero cosine occurs at $\theta=\pi/2$ modulo
+$\pi$, and the nearest nonzero point of the grid has absolute cosine
+$\sin(\pi/(v-1))$.  Thus no unit-circle zero exists for
+$0<t<2\sin(\pi/(v-1))$.  The argument principle now makes the number of
+zeros in the unit disk constant throughout this interval, so it remains two.
+\end{proof}
+
+\begin{theorem}[Quadratic exclusion]\label{thm:noquadratic}
+If $1+a x^u+x^v$ is a genuinely fractional factor in a normalized
+nonnegative factorization of a Newman polynomial and
+$\min\{u,v-u\}=2$, then $[\Q(a):\Q]\ge3$.
+\end{theorem}
+\begin{proof}
+Assume $a$ is quadratic.  Proposition~\ref{prop:quadratic} gives
+$a=(3-\sqrt5)/2$ and conjugate $a'=(3+\sqrt5)/2=\ph^2$.  Reverse so $u=2$
+and $v\ge5$ is odd.  Under $z=\ph x$,
+\[
+ A_{a'}(z/\ph)=1+z^2+\ph^{-v}z^v.
+\]
+Moreover $\ph^{-v}<2\sin(\pi/(v-1))$: indeed
+$2\sin(\pi/(v-1))\ge4/(v-1)$, while $\ph^v>F_v\ge v-1$ for $v\ge5$.
+Lemma~\ref{lem:boundary} yields a zero $|z|<1$, hence a zero
+$|x|<\ph^{-1}$ of $A_{a'}$.  Theorem~\ref{thm:norm}(a) makes this a zero of
+$C$, contradicting~\eqref{eq:annulus}.
+\end{proof}
+
+\section{Global cubic exclusion for the smaller gap two}
+\label{sec:globalcubic}
+
+This section replaces a bounded quotient search by a forced-recurrence
+certificate.  The argument has two exact computational layers.  First, the
+uniform norm sieve produces the same $126$ possible cubic minimal polynomials
+for every odd $v\ge5$.  Second, for the distinguished root $a\in(0,1/2)$ of
+each polynomial, a parity-block expansion proves that the cofactor recurrence
+stays strictly positive, apart from its forced initial zeros, until a specified
+coefficient becomes negative.  The obstruction index is at most $27v+8$.
+
+\begin{remark}[Why the nonnegative cofactor is essential]\label{rem:scopeglobal}
+Let $a=2\cos(4\pi/9)$, the root in $(0,1/2)$ of the irreducible polynomial
+$t^3-3t+1$.  Exact multiplication, using $a^3=3a-1$, gives
+\[
+ 1+x^{18}=(1+a x^2+x^4)B(x),
+\]
+where
+\begin{align*}
+B(x)={}&x^{14}-a x^{12}+(a^2-1)x^{10}+(1-a)x^8\\
+      &+(1-a)x^6+(a^2-1)x^4-a x^2+1.
+\end{align*}
+Thus cubic ordinary Newman divisibility does occur.  The negative coefficients
+of $B$ show why the normalized nonnegative-factorization hypothesis cannot be
+discarded.
+\end{remark}
+
+\begin{lemma}[Uniform cubic catalog]\label{lem:cubiccatalog}
+If $A_a(x)=1+a x^2+x^v$ occurs in a normalized nonnegative factorization,
+$v\ge5$ is odd, and $[\Q(a):\Q]=3$, then the minimal polynomial of $a$ is one
+of the $126$ polynomials in the accompanying exact catalog.
+\end{lemma}
+\begin{proof}
+Write $m_a(t)=t^3+s_2t^2+s_1t+s_0$.  For every odd $v\ge5$,
+Theorem~\ref{thm:norm} gives
+\[
+ |\alpha|<\ph^2+\ph^{2-v}\le \ph^2+\ph^{-3}<\frac{143}{50}
+\]
+for every conjugate $\alpha$ of $a$.  Therefore
+\[
+ |s_2|\le8,\qquad |s_1|\le24,\qquad |s_0|\le23.
+\]
+If $\alpha,\beta$ are the other two conjugates, then
+$|s_0|=|a\alpha\beta|$ is a positive integer.  Hence the target root also has
+the uniform lower bound
+\[
+ a>\left(\frac{50}{143}\right)^2=\frac{2500}{20449}.
+\]
+The real-conjugate estimate also gives $\alpha>-\kappa(2,v)>-2$ for every
+real conjugate.  The exact generator enumerates all $38318$ triples in the
+boxes with nonzero constant coefficient, removes reducible cubics by the
+integer-root test, counts roots in $(0,1/2)$ and $(-3,-2]$ by rational Sturm
+sequences, and applies rational Schur recursion for the disk bound.  Exactly
+$126$ irreducible cubics remain.  The independent checker repeats this
+enumeration without importing the generator.
+\end{proof}
+
+For the recurrence certificate, define the formal series
+\begin{equation}\label{eq:forcedseries}
+ Q_{a,v}(x):=\frac{1+x^v}{(1-x^2)(1+a x^2+x^v)}
+             =\sum_{n\ge0}q_nx^n.
+\end{equation}
+The eventual sign change in this series is not special to algebraic degree
+three.
+\begin{lemma}[Analytic sign change]\label{lem:pringsheim}
+For every $a>0$ and every odd $v\ge5$, the series $Q_{a,v}$ has a negative
+coefficient.
+\end{lemma}
+\begin{proof}
+Put $A(x)=1+ax^2+x^v$.  Since $A$ is monic with constant coefficient $1$,
+the product of the moduli of its roots is $1$.  If $A$ had no root in the open
+unit disk, all its roots would therefore lie on the unit circle.  Reality of
+the coefficients would then make the root multiset invariant under inversion,
+so the monic reciprocal $x^vA(x^{-1})=x^v+ax^{v-2}+1$ would equal $A$.
+This is impossible for $a>0$ and $v\ge5$.  Thus $A$ has a root of modulus
+strictly less than $1$.
+
+No zero of $A$ cancels against $1+x^v$: a common zero would give $ax^2=0$.
+Nor does $A$ vanish at $1$ or $-1$.  Hence the radius of convergence of
+$Q_{a,v}$ is some $R<1$.  If every $q_n$ were nonnegative, Pringsheim's
+theorem would make the positive real point $R$ a singularity.  But the
+displayed rational function has no singularity on $(0,1)$, since both
+$1-x^2$ and $1+ax^2+x^v$ are positive there.  This contradiction proves the
+claim.
+\end{proof}
+\begin{remark}[General nonpalindromic gaps]\label{rem:generalpringsheim}
+The same proof works with $2$ replaced by any $u$ with $0<u<v$ and $2u\ne v$:
+the formal series
+\[
+ \frac{1+x^v}{(1-x^u)(1+a x^u+x^v)}
+\]
+has a negative coefficient for every $a>0$.  Indeed, if all roots of the
+trinomial lay on the unit circle, reciprocity would force the middle exponents
+$u$ and $v-u$ to agree.  This analytic statement alone does not prove that an
+arbitrary finite cofactor follows the displayed forced-ray series up to its
+first negative term.
+\end{remark}
+
+The numerator is not an arbitrary guess: if the cofactor coefficients remain
+nonnegative, positivity forces the product coefficients to be $1$ on the even
+ray and on the odd ray beginning at $v$.
+
+\begin{lemma}[Forced-series obstruction]\label{lem:forcedseries}
+Let $0<a<1$, let $v\ge5$ be odd, and suppose there is an index $N>v$ such
+that the coefficients of~\eqref{eq:forcedseries} satisfy
+\[
+ 0\le q_n<1\qquad(0<n<N),
+\]
+and $q_N<0$.  Then $1+a x^2+x^v$ has no finite monic nonnegative cofactor
+whose product is a Newman polynomial.
+\end{lemma}
+\begin{proof}
+Extend a prospective cofactor $B=\sum b_nx^n$ by zero outside its degree.
+Endpoint normalization gives $0\le b_n\le1$ for every $n$.
+The coefficient at degree $v$ contains $b_0=1$, so it forces
+$b_v=b_{v-2}=0$.  If $b_j=0$ at an odd index $j<v$ but
+$b_{j-2}>0$, then the coefficient at degree $j$ would force
+$ab_{j-2}=1$, and hence $b_{j-2}=1/a>1$, a contradiction.  Backward
+propagation along the odd ray therefore gives
+$b_1=b_3=\cdots=b_{v-2}=0$.  Along the even ray below $v$, positivity forces
+the product coefficient to be $1$ and hence gives the coefficients of
+$Q_{a,v}$.
+
+For $n\ge v$, the defining recurrence for $Q_{a,v}$ gives
+\[
+ a q_{n-2}+q_{n-v}=1-q_n.
+\]
+This forcing term is strictly positive for $n<N$ by hypothesis and is greater
+than $1$ at $n=N$.  Thus the product coefficient is forced to be $1$, and
+induction gives $b_n=q_n$ through
+$\min\{N,\deg B\}$.  If $\deg B\ge N$, this yields the contradiction
+$b_N=q_N<0$.  If $0<\deg B<N$, then the leading coefficient $b_{\deg B}=1$.
+But $b_{\deg B}=q_{\deg B}<1$, again contradicting monicity.  Finally $B=1$
+would leave the fractional coefficient $a$ in the product.
+\end{proof}
+
+\begin{proposition}[The coefficient-one escape]\label{prop:oneescape}
+Fix $0<a<1$ and odd $v\ge5$.  Suppose that, through degree $n-1\ge v$,
+a prospective nonnegative cofactor agrees with the forced series
+$Q_{a,v}=\sum q_jx^j$.  Put
+\[
+ f_n:=a q_{n-2}+q_{n-v}.
+\]
+Then $f_n>1$ is an immediate contradiction; if $0<f_n\le1$, the Newman
+product coefficient at degree $n$ is forced to be $1$ and the next cofactor
+coefficient is forced to be $q_n=1-f_n$; and if $f_n=0$, the first deviation
+from the forced series is possible.  In the last case $q_n=1$, and, while the
+preceding coefficients are nonnegative,
+\[
+ f_n=0\quad\Longleftrightarrow\quad q_{n-2}=q_{n-v}=0.
+\]
+No such simultaneous predecessor-zero event occurs for $v<n\le2v$.
+\end{proposition}
+\begin{proof}
+At every degree $n\ge v$, the target ray series has coefficient $1$, so
+$q_n=1-f_n$.  If the actual product coefficient is $c_n\in\{0,1\}$, then
+nonnegativity of the next cofactor coefficient gives
+$b_n=c_n-f_n\ge0$.  Thus $f_n>0$ forces $c_n=1$, and gives the first two
+alternatives; when $f_n=0$, either $c_n=1$ and $b_n=q_n=1$, or $c_n=0$ and
+$b_n=0$, which is the first possible branch away from $Q_{a,v}$.  Because
+$a>0$, a zero sum of the two nonnegative predecessors is equivalent to their
+simultaneous vanishing.
+
+For $v<n\le2v$, if $n$ is even then $q_{n-v}$ lies on the initial odd zero
+ray whereas $q_{n-2}=1-a+a^2-\cdots$ is strictly positive for $0<a<1$.
+If $n$ is odd, then $q_{n-v}$ is such a positive alternating geometric sum.
+Hence $f_n>0$ throughout this range.
+\end{proof}
+
+\begin{lemma}[Parity rationalization]\label{lem:parityrationalization}
+Put $z=x^2$ and define $r_m=r_m(t)$ by
+\[
+ R_{t,v}(z):=\sum_{m\ge0}r_mz^m
+ =\frac{1}{(1-z)((1+tz)^2-z^v)},
+ \qquad r_m=0\quad(m<0).
+\]
+Then the forced-series coefficients, regarded as polynomials in $t$, satisfy
+\begin{align*}
+ q_{2m}(t)&=r_m+t r_{m-1}-r_{m-v},\\
+ q_{v+2m}(t)&=t r_{m-1}.
+\end{align*}
+Moreover
+\[
+ r_m+2t r_{m-1}+t^2r_{m-2}-r_{m-v}=1
+ \qquad(m\ge0).
+\]
+\end{lemma}
+\begin{proof}
+Rationalizing with respect to the odd power $x^v$ gives
+\begin{align*}
+ Q_{t,v}(x)
+ &=\frac{(1+x^v)(1+tx^2-x^v)}
+ {(1-x^2)((1+tx^2)^2-x^{2v})}\\
+ &=\frac{1+tz-z^v+t x^v z}
+ {(1-z)((1+tz)^2-z^v)}.
+\end{align*}
+Separating the even part and the $x^v$ times an even series gives the two
+coefficient identities.  The recurrence for $r_m$ is the coefficient of
+$z^m$ in
+$((1+tz)^2-z^v)R_{t,v}(z)=(1-z)^{-1}$.
+\end{proof}
+
+For $k,m\ge0$ put
+\[
+ P_{k,m}(t):=\sum_{\ell=0}^{m}(-1)^\ell
+              {k+\ell\choose\ell}t^\ell,
+ \qquad P_{k,\infty}(t)=(1+t)^{-k-1}.
+\]
+These are the Taylor partial sums of $(1+t)^{-k-1}$.  The next theorem
+turns the parity rationalization into an infinite forbidden region for the
+two-predecessor zero pair.
+
+\begin{theorem}[Predecessor safe lattice]\label{thm:safelattice}
+Let $0<t<1/2$, let $v\ge5$ be odd, and let $n>2v$.  If
+\[
+ q_{n-2}(t)=q_{n-v}(t)=0,
+\]
+then
+\[
+ n\ge5v+4\quad\hbox{when $n$ is odd},\qquad
+ n\ge6v+2\quad\hbox{when $n$ is even}.
+\]
+Thus a first coefficient-one escape in Proposition~\ref{prop:oneescape}
+obeys the same lower bounds.
+\end{theorem}
+\begin{proof}
+Write $E_m=q_{2m}$.  Lemma~\ref{lem:parityrationalization} and its recurrence
+give
+\begin{equation}\label{eq:Er}
+ E_m=1-t r_{m-1}-t^2r_{m-2}.
+\end{equation}
+If $n$ is odd, put $j=(n-v)/2-2$; if $n$ is even, put
+$j=n/2-v-1$.  The predecessor pairs become, respectively,
+\begin{equation}\label{eq:predecessorpairs}
+ (q_{n-2},q_{n-v})=(t r_j,E_{j+2}),\qquad
+ (q_{n-v},q_{n-2})=(t r_j,E_{j+v}).
+\end{equation}
+It is therefore enough to exclude a common zero in either pair for
+$0\le j<2v$.
+
+Expanding the defining rational function for $R_{t,v}$ geometrically in
+$z^v/(1+tz)^2$ gives, for $0\le j<2v$,
+\begin{equation}\label{eq:firsttworblocks}
+ r_j=P_{1,j}+\boldsymbol{1}_{j\ge v}P_{3,j-v}.
+\end{equation}
+The terms $(\ell+1)t^\ell$ decrease strictly when $0<t<1/2$, so every
+$P_{1,j}$ is positive.  Taylor's theorem also gives
+$P_{k,2h}>P_{k,\infty}>0$.  Hence $r_j>0$ unless
+$j=v+s$ with $s$ odd.  Odd $P_{3,s}$ increase with $s$, while for $s\ge7$
+\[
+ r_{v+s}> (1+t)^{-2}+P_{3,7}(t)>0.
+\]
+For completeness, the last function is decreasing on $(0,1/2)$: after
+differentiation its negative numerator is twice
+\[
+ 420t^9+1008t^8+644t^7+14t^6
+ +(10t^4-12t^5)+(6t^2-8t^3)+(3-4t),
+\]
+which is positive term by term.  Its value at $t=1/2$ is $37/144$.
+Consequently only $s\in\{1,3,5\}$ can remain.
+
+First consider the odd pair in~\eqref{eq:predecessorpairs}.  At a zero of
+$r_{v+s}$, equation~\eqref{eq:Er} gives
+\[
+ E_{v+s+2}=1-t r_{v+s+1}.
+\]
+Here $P_{1,v+s+1}<(1+t)^{-2}$, and the even partial sums $P_{3,2h}$
+decrease from $P_{3,2}$ for $h\ge1$.  Thus
+\[
+ r_{v+s+1}<(1+t)^{-2}+P_{3,2}(t).
+\]
+The resulting lower bound
+\[
+ 1-t\bigl((1+t)^{-2}+1-4t+10t^2\bigr)
+\]
+is positive on $(0,1/2)$.  Indeed, after multiplication by $(1+t)^2$ its
+complement is
+$10t^5+16t^4+3t^3-3t^2$, which is at most $15/16$: use
+$10t^5\le5t^4$, $t^4\le t^2/4$, and $t^3\le t^2/2$.
+Therefore the odd pair never vanishes for $j<2v$.
+
+It remains to treat the even pair for the three exceptional offsets.  We
+will use the exact identity
+\begin{equation}\label{eq:evenexception}
+ E_{2v+s}=P_{0,2v+s}
+ -t\bigl(P_{4,s-1}+P_{2,v+s-1}\bigr),
+ \qquad s\in\{1,3,5\},
+\end{equation}
+obtained from the same geometric expansion.  The odd partial sums
+$P_{2,m}$ increase for odd $m\ge5$ and are positive: $P_{2,5}$ is decreasing
+on $(0,1/2)$ because
+\[
+ P_{2,5}'=-3\{t^2(35t^2-20t+3)+(7t^2-4t+1)\}<0,
+\]
+and $P_{2,5}(1/2)=1/32$.
+
+For $s=1$, a zero of $r_{v+1}$ satisfies
+$P_{1,v+1}=4t-1$.  The even $P_{1,2h}$ decrease, so
+$P_{1,6}-(4t-1)\ge0$.  This difference decreases on $(0,1/2)$ and at
+$t=383/1000$ equals
+\[
+ -\frac{2424992339692617}{10^{18}}<0.
+\]
+Hence $t<383/1000$.  Since $P_{0,2v+1}>1-t$ and
+$P_{2,v}<(1+t)^{-3}$, equation~\eqref{eq:evenexception} gives
+\[
+ E_{2v+1}>1-2t-\frac{t}{(1+t)^3}>0;
+\]
+the last expression decreases and at $t=383/1000$ is already
+\[
+ \frac{117994119779}{1322624443500}>0.
+\]
+
+For $s=3$, the function $(1+t)^{-2}+P_{3,3}(t)$ is decreasing.  At
+$t=433/1000$ its value is
+\[
+ \frac{637744741107}{102674450000000}>0.
+\]
+Thus a zero of $r_{v+3}$ has $t>433/1000$.  Since
+$P_{0,2v+3}<(1+t)^{-1}$ and the
+$P_2$ term in~\eqref{eq:evenexception} is positive,
+\[
+ E_{2v+3}<(1+t)^{-1}-tP_{4,2}(t)<0.
+\]
+The right side decreases beyond $433/1000$ and at that endpoint is
+\[
+ -\frac{4430649363}{286600000000}.
+\]
+
+For $s=5$, direct differentiation shows that
+$(1+t)^{-2}+P_{3,5}(t)$ is decreasing; its derivative has negative
+numerator twice
+\[
+ 140t^7+350t^6+240t^5+10t^4+(6t^2-8t^3)+(3-4t)>0.
+\]
+At $t=487/1000$ its value is the positive number
+\[
+ \frac{83847268664253747}{138198062500000000000},
+\]
+so a zero of $r_{v+5}$ has $t>487/1000$.
+Equation~\eqref{eq:evenexception} then gives
+\[
+ E_{2v+5}<(1+t)^{-1}-tP_{4,4}(t)<0;
+\]
+the endpoint value is
+$-46095940700109163/148700000000000000$, and the bound decreases thereafter.
+This excludes the even pair for every $j<2v$.
+
+Finally, $j<2v$ corresponds to $n\le5v+2$ in the odd case and to
+$n\le6v$ in the even case.  Advancing by the relevant parity proves the two
+stated lower bounds.
+\end{proof}
+
+The accompanying dependency-free checker verifies $11544$ two-block formulas,
+$17390$ parity identities, and $23088$ predecessor-pair identities for all $74$
+odd exponents through $v=151$.  An independent exact symbolic checker clears
+denominators and uses rational real-root counts to certify the eight derivative
+signs and two positivity assertions used above.  These finite audits support,
+but are not logically substituted for, the uniform analytic proof.
+
+\begin{theorem}[Three-block predecessor safe lattice]
+\label{thm:threeblocks}
+Let $0<t<1/2$, let $v\ge5$ be odd, and let $n>2v$.  If
+\[
+ q_{n-2}(t)=q_{n-v}(t)=0,
+\]
+then
+\[
+ n\ge7v+4\quad\hbox{when $n$ is odd},\qquad
+ n\ge8v+2\quad\hbox{when $n$ is even}.
+\]
+Thus every first coefficient-one escape in
+Proposition~\ref{prop:oneescape} obeys these stronger bounds.
+\end{theorem}
+\begin{proof}
+Theorem~\ref{thm:safelattice} and~\eqref{eq:predecessorpairs} reduce the new
+work to $j=2v+s$ with $0\le s<v$.  A third term in the geometric expansion
+used for~\eqref{eq:firsttworblocks} gives
+\begin{equation}\label{eq:thirdrblock}
+ r_{2v+s}=P_{1,2v+s}+P_{3,v+s}+P_{5,s}.
+\end{equation}
+We use repeatedly the derivative identity
+$P'_{k,m}=-(k+1)P_{k+1,m-1}$ and the paired-increment identity
+\begin{equation}\label{eq:pairedincrement}
+ P_{k,m+2}-P_{k,m}
+ =(-1)^{m+1}{k+m+1\choose m+1}t^{m+1}
+ \left(1-\frac{k+m+2}{m+2}t\right).
+\end{equation}
+Thus the relevant odd partial sums increase with their odd order and the
+relevant even partial sums decrease with their even order.
+
+We first isolate all possible zeros of~\eqref{eq:thirdrblock}.  If $s$ is even
+and $s\ge2$, or if $s=0$ and $v\ge7$, Taylor's theorem and
+\eqref{eq:pairedincrement} give
+\[
+ r_{2v+s}>(1+t)^{-2}+P_{3,7}(t)+(1+t)^{-6}>0.
+\]
+The last function is decreasing, and its value at $1/2$ is $4021/11664$.
+For the remaining case $(v,s)=(5,0)$, use
+$P_{3,5}(t)\ge P_{3,5}(1/2)=-9/16$ and
+$P_{1,10}>(1+t)^{-2}\ge4/9$ to obtain
+$r_{10}>127/144$.  If $s\ge13$ is odd, then $v\ge15$ and
+\[
+ r_{2v+s}>P_{1,43}(t)+(1+t)^{-4}+P_{5,13}(t)>0.
+\]
+Again the displayed function is decreasing; at $1/2$ it equals
+\[
+ \frac{108675557490085}{356241767399424}>0.
+\]
+Hence only $s\in\{1,3,5,7,9,11\}$ can remain.
+
+For these six offsets let $v_s$ be the least admissible odd $v$, namely
+$5,5,7,9,11,13$, and put
+\[
+ L_s=P_{1,2v_s+s}+(1+t)^{-4}+P_{5,s},\qquad
+ U_s=(1+t)^{-2}+P_{3,v_s+s}+P_{5,s}.
+\]
+Odd partial sums increase and even partial sums decrease, so
+$L_s<r_{2v+s}<U_s$.  Exact rational Sturm chains give the following brackets
+for every zero of $r_{2v+s}$ in $(0,1/2)$:
+\[
+\begin{array}{c|cccccc}
+s&1&3&5&7&9&11\\ \hline
+\alpha_s&.3178&.3441&.3873&.4270&.4618&.4921\\
+\beta_s &.322 &.345 &.388 &.428 &.462 &.493
+\end{array}
+\qquad \alpha_s<t<\beta_s.
+\]
+All decimals here are the displayed terminating rationals.  The certificate
+checks that $L_s$ has no zero on $(0,\alpha_s]$ and is positive there, while
+$U_s$ has no zero on $[\beta_s,1/2)$ and is negative there.  Their endpoint
+margins are retained as exact fractions.
+
+Consider first the odd event pair.  At a zero of $r_{2v+s}$, taking one more
+partial-sum term in~\eqref{eq:thirdrblock} gives
+\begin{align*}
+ r_{2v+s+1}={}&(2v+s+2)t^{2v+s+1}
+ -{v+s+4\choose3}t^{v+s+1}
+ +{s+6\choose5}t^{s+1}.
+\end{align*}
+Dropping the negative middle term and using $t<\beta_s$, the remaining
+$v$-dependent term is maximal at $v=v_s$: after replacing $v$ by $v+2$, its
+ratio is at most
+\[
+ \frac{2v+s+6}{2v+s+2}\beta_s^4
+ \le\frac{17}{13}\left(\frac{493}{1000}\right)^4<1.
+\]
+We therefore obtain
+\[
+ t r_{2v+s+1}<
+ {s+6\choose5}\beta_s^{s+2}
+ +(2v_s+s+2)\beta_s^{2v_s+s+2}<\frac34.
+\]
+The last six strict rational inequalities are recorded in the audit.  Thus
+$E_{2v+s+2}=1-t r_{2v+s+1}>1/4$, excluding the odd pair.
+
+For the even pair, the same geometric expansion gives, for every $m$,
+\begin{equation}\label{eq:evenpartialblocks}
+ E_m=P_{0,m}-t\sum_{1\le h\le m/v}P_{2h,m-hv-1}.
+\end{equation}
+At $m=3v+s$ this has the three terms $P_2,P_4,P_6$ in the sum.  If $s=1$,
+the root bracket and partial-sum monotonicity imply
+\[
+ E_{3v+1}>(1+t)^{-1}
+ -t\{P_{2,10}(t)+(1+t)^{-5}+1\}>0.
+\]
+The final function has no zero on $[.3178,.322]$ and is positive at both
+endpoints.  For $s\in\{3,5,7,9,11\}$, use
+$P_{0,3v+s}=(1+t^{3v+s+1})/(1+t)$, bound the positive tail by
+$\beta_s^{3v_s+s+1}$, and use monotonicity in the other three partial sums:
+\begin{align*}
+ E_{3v+s}<&\ (1+t)^{-1}+\beta_s^{3v_s+s+1}\\
+ &-t\{(1+t)^{-3}+P_{4,v_s+s-1}(t)+P_{6,s-1}(t)\}<0.
+\end{align*}
+For each $s$, the last upper bound has no zero on
+$[\alpha_s,\beta_s]$ and is negative at both endpoints, again by exact
+rational Sturm chains.  This excludes the even pair.
+
+We have excluded both pairs for $j<3v$.  The largest corresponding odd event
+index is $7v+2$, and the largest even event index is $8v$.  Advancing by the
+relevant parity proves the theorem.
+\end{proof}
+
+The dependency-free checker verifies $30591$ three-block formulas,
+$40887$ parity identities, and $61182$ predecessor-pair identities for all
+$99$ odd exponents through $v=201$.  A separate symbolic checker supplies
+$21$ exact root-free rational-interval sign certificates for the exceptional
+offsets and companion bounds.  These audits are reproducible finite checks of
+the explicit algebra in the uniform proof; the theorem is not inferred from
+the cutoff $v=201$.
+
+\begin{theorem}[Four-block predecessor safe lattice]
+\label{thm:fourblocks}
+Let $0<t<1/2$, let $v\ge5$ be odd, and let $n>2v$.  If
+\[
+ q_{n-2}(t)=q_{n-v}(t)=0,
+\]
+then
+\[
+ n\ge9v+4\quad\hbox{when $n$ is odd},\qquad
+ n\ge10v+2\quad\hbox{when $n$ is even}.
+\]
+Thus every first coefficient-one escape in
+Proposition~\ref{prop:oneescape} obeys these stronger bounds.
+\end{theorem}
+\begin{proof}
+By Theorem~\ref{thm:threeblocks}, it remains to exclude the two pairs in
+\eqref{eq:predecessorpairs} for $j=3v+s$, $0\le s<v$.  The next geometric
+term gives
+\begin{equation}\label{eq:fourthrblock}
+ r_{3v+s}=P_{1,3v+s}+P_{3,2v+s}+P_{5,v+s}+P_{7,s}.
+\end{equation}
+We continue to use the paired-increment identity~\eqref{eq:pairedincrement}.
+
+First isolate the zeros of~\eqref{eq:fourthrblock}.  Suppose that $s$ is
+even.  For $s\in\{2,4,\ldots,16\}$, let $w_s=\max(5,s+1)$.  Odd partial
+sums increase and even partial sums decrease toward their limits, so
+\[
+ r_{3v+s}>
+ P_{1,3w_s+s}+(1+t)^{-4}+P_{5,w_s+s}+P_{7,s}>0.
+\]
+The last eight signs are exact Sturm certificates.  The same argument with
+$w_0=9$ proves positivity for $s=0$ and $v\ge9$.  If $s\ge18$ is even, then
+$P_{1,3v+s}>0$, while the $P_3$ and $P_7$ terms are positive even partial
+sums.  Also $v+s\ge2s+1\ge37$, and
+$P_{5,v+s}\ge P_{5,37}>0$; the last sign is again certified on $(0,1/2)$.
+Thus the only even-offset cases not covered analytically are $(v,s)=(5,0)$
+and $(7,0)$.
+
+Now suppose that $s$ is odd.  For $s\ge19$, the least admissible exponent is
+$v=s+2$, and monotonicity gives
+\[
+ r_{3v+s}>(1+t)^{-2}+P_{3,3s+4}+(1+t)^{-6}+P_{7,s}
+ \ge (1+t)^{-2}+P_{3,61}+(1+t)^{-6}+P_{7,19}>0.
+\]
+The final function has no zero on $(0,1/2)$ and is positive at both
+endpoints.  For $s\in\{1,3,\ldots,17\}$, put $v_1=7$ and
+$v_s=\max(5,s+2)$ otherwise, and define
+\begin{align*}
+ L_s&=(1+t)^{-2}+P_{3,2v_s+s}+(1+t)^{-6}+P_{7,s},\\
+ U_s&=P_{1,3v_s+s}+(1+t)^{-4}+P_{5,v_s+s}+P_{7,s}.
+\end{align*}
+Then $L_s<r_{3v+s}<U_s$.  Exact rational Sturm chains confine every zero to
+the following intervals:
+\[
+\begin{array}{c|ccccc}
+s&1&3&5&7&9\\ \hline
+\alpha_s&.277&.288&.323&.359&.391\\
+\beta_s &.279&.290&.325&.360&.392
+\end{array}
+\qquad
+\begin{array}{c|cccc}
+s&11&13&15&17\\ \hline
+\alpha_s&.420&.446&.469&.490\\
+\beta_s &.421&.447&.471&.492
+\end{array}
+\]
+Here $L_s$ is positive and root-free on $(0,\alpha_s]$, while $U_s$ is
+negative and root-free on $[\beta_s,1/2)$.  The only omitted odd case is
+$(v,s)=(5,1)$.
+
+The three finite cases $(5,0)$, $(7,0)$, and $(5,1)$ are disposed of without
+approximating their roots.  In each case the two integer-polynomial pairs
+$(r_{3v+s},E_{3v+s+2})$ and $(r_{3v+s},E_{4v+s})$ are primitive, their degrees
+are preserved modulo $7$, and their monic gcds in $\mathbb F_7[t]$ are $1$.
+The retained certificates give every Euclidean remainder.  Gauss's lemma
+therefore excludes a common zero over $\C$, and hence over $(0,1/2)$.
+
+It remains to separate the companions at the nine uniform root intervals.
+At a zero of $r_{3v+s}$, the next partial-sum terms give
+\begin{align*}
+ r_{3v+s+1}={}&-(3v+s+2)t^{3v+s+1}
+ +{2v+s+4\choose3}t^{2v+s+1}\\
+ &-{v+s+6\choose5}t^{v+s+1}
+ +{s+8\choose7}t^{s+1}.
+\end{align*}
+After multiplication by $t$, discard the two negative terms.  The ratio of
+the remaining $v$-dependent term after replacing $v$ by $v+2$ is at most
+\[
+ \frac{{2v+s+8\choose3}}{{2v+s+4\choose3}}\,\beta_s^4<1;
+\]
+it is enough to check this at $v=v_s$.  The nine exact rational margins give
+\[
+ t r_{3v+s+1}<
+ {2v_s+s+4\choose3}\beta_s^{2v_s+s+2}
+ +{s+8\choose7}\beta_s^{s+2}<1.
+\]
+Consequently $E_{3v+s+2}=1-t r_{3v+s+1}>0$, excluding the odd event pair.
+
+For the even event pair, substitute $m=4v+s$ in
+\eqref{eq:evenpartialblocks}.  When $s=1$, partial-sum monotonicity and the
+root bracket give
+\begin{align*}
+ E_{4v+1}>&\ \frac{1-\beta_1^{4v_1+2}}{1+t}\\
+ &-t\{(1+t)^{-3}+P_{4,2v_1}(t)+(1+t)^{-7}+1\}>0.
+\end{align*}
+For $s\in\{3,5,\ldots,17\}$, the complementary bounds give
+\[
+ E_{4v+s}< (1+t)^{-1}
+ -t\{P_{2,3v_s+s-1}(t)+(1+t)^{-5}
+       +P_{6,v_s+s-1}(t)+P_{8,s-1}(t)\}<0.
+\]
+Each displayed companion bound is root-free with the stated sign on
+$[\alpha_s,\beta_s]$, by exact Sturm chains.  This excludes the even event
+pair.
+
+We have excluded both pairs for $j<4v$.  The largest corresponding odd event
+index is $9v+2$, and the largest even event index is $10v$.  Advancing by the
+relevant parity proves the theorem.
+\end{proof}
+
+The dependency-free checker verifies $63488$ four-block formulas, $79484$
+parity identities, and $126976$ predecessor-pair identities for all $124$ odd
+exponents through $v=251$.  It also retains full mod-$7$ Euclidean
+certificates for the six finite exceptional companion pairs.  An independent
+SymPy checker supplies $38$ root-free rational-interval sign certificates and
+recomputes all six modular gcds.  Both deterministic JSON outputs use
+canonical LF bytes, making their recorded hashes platform-independent.  The
+finite cutoff audits the algebra; the theorem itself is uniform.
+
+\begin{theorem}[Five-block predecessor safe lattice]\label{thm:fiveblocks}
+Let $0<t<1/2$, let $v\ge5$ be odd, and let $n>2v$.  If
+\[
+ q_{n-2}(t)=q_{n-v}(t)=0,
+\]
+then
+\[
+ n\ge11v+4\quad\hbox{when $n$ is odd},\qquad
+ n\ge12v+2\quad\hbox{when $n$ is even}.
+\]
+Thus every first coefficient-one escape in Proposition~\ref{prop:oneescape}
+obeys these stronger bounds.
+\end{theorem}
+\begin{proof}
+By Theorem~\ref{thm:fourblocks}, it remains to exclude the two pairs in
+\eqref{eq:predecessorpairs} for $j=4v+s$, $0\le s<v$.  The next geometric
+term gives
+\begin{equation}\label{eq:fiveblock}
+ r_{4v+s}=P_{1,4v+s}+P_{3,3v+s}+P_{5,2v+s}
+              +P_{7,v+s}+P_{9,s}.
+\end{equation}
+
+We first isolate its zeros.  Suppose that $s$ is even.  For
+$s\in\{0,2,4,6\}$ use respectively
+\[
+ (s,v_0)=(0,17),(2,7),(4,5),(6,7)
+\]
+and put
+\[
+ M_{s,v_0}=(1+t)^{-2}+P_{3,3v_0+s}+(1+t)^{-6}
+                         +P_{7,v_0+s}+P_{9,s}.
+\]
+Even partial sums lie above their limits and odd partial sums increase with
+their odd order.  Hence $r_{4v+s}>M_{s,v_0}$ whenever $v\ge v_0$.
+Exact rational Sturm chains show that these four functions are positive and
+root-free on $(0,1/2)$.  This leaves only
+\begin{equation}\label{eq:fiveblockevenexceptions}
+ (v,s)=(5,0),(5,2),(7,0),(9,0),(11,0),(13,0),(15,0).
+\end{equation}
+
+For every even $s\ge8$, the same monotonicity gives
+\[
+ r_{4v+s}>M_s:=(1+t)^{-2}+P_{3,4s+3}+(1+t)^{-6}
+                         +P_{7,2s+1}+P_{9,s}.
+\]
+Write $A_9={s+10\choose9}$, $A_7={2s+9\choose7}$, and
+$A_3={4s+7\choose3}$.  Alternating-tail estimates give
+\begin{align*}
+ P_{9,s}-(1+t)^{-10}
+ &\ge A_9t^{s+1}\left(1-\frac{s+11}{s+2}t\right),\\
+ (1+t)^{-8}-P_{7,2s+1}&<A_7t^{2s+2},\\
+ (1+t)^{-4}-P_{3,4s+3}&<A_3t^{4s+4}.
+\end{align*}
+It is enough that $R_7(s)+R_3(s)<1$, where
+\[
+ R_7(s)=\frac{A_7}{A_9}\frac{2(s+2)}{s-7}\,2^{-s-1},\qquad
+ R_3(s)=\frac{A_3}{A_9}\frac{2(s+2)}{s-7}\,2^{-3s-3}.
+\]
+At $s=8$ their sum is $126012629939/326283296768<1$.  Both summands
+decrease under $s\mapsto s+2$: their successive ratios are
+\begin{align*}
+ &\frac{(s-7)(s+4)(s+5)(s+6)(2s+11)(2s+13)}
+ {4(s-5)(s+2)(s+11)(s+12)(2s+3)(2s+5)},\\
+ &\frac{(s-7)(s+3)(s+4)(2s+7)(4s+13)(4s+15)}
+ {64(s-5)(s+11)(s+12)(2s+3)(4s+5)(4s+7)}.
+\end{align*}
+After $s=x+8$, the numerators of one minus these ratios have only positive
+coefficients.  Thus $M_s>0$, excluding every remaining even offset.
+
+Now let $s$ be odd.  Put $v_1=13$, and for
+$s\in\{3,5,\ldots,23\}$ put $v_s=\max(5,s+2)$.  Define
+\begin{align*}
+ L_s={}&P_{1,4v_s+s}+(1+t)^{-4}+P_{5,2v_s+s}
+                         +(1+t)^{-8}+P_{9,s},\\
+ U_s={}&(1+t)^{-2}+P_{3,3v_s+s}+(1+t)^{-6}
+                         +P_{7,v_s+s}+P_{9,s}.
+\end{align*}
+For $v\ge v_s$, the paired-increment identity gives
+$L_s<r_{4v+s}<U_s$.  For odd $s\ge25$, the lower bound increases with $s$,
+and its first instance
+\[
+ P_{1,133}+(1+t)^{-4}+P_{5,79}+(1+t)^{-8}+P_{9,25}
+\]
+is positive and root-free on $(0,1/2)$ by an exact Sturm chain.  Hence only
+the twelve offsets $s=1,3,\ldots,23$ remain.  Exact rational Sturm chains
+confine their uniform zeros to
+\[
+\begin{array}{c|cccccc}
+s&1&3&5&7&9&11\\ \hline
+\alpha_s&.248&.249&.279&.310&.340&.367\\
+\beta_s &.250&.251&.280&.312&.341&.368
+\end{array}
+\qquad
+\begin{array}{c|cccccc}
+s&13&15&17&19&21&23\\ \hline
+\alpha_s&.392&.415&.435&.454&.472&.488\\
+\beta_s &.393&.416&.437&.456&.474&.490.
+\end{array}
+\]
+Here $L_s$ is positive and root-free on $(0,\alpha_s]$, while $U_s$ is
+negative and root-free on $[\beta_s,1/2)$.  At $s=1$ this uses $v\ge13$;
+the omitted cases are
+\begin{equation}\label{eq:fiveblockoddexceptions}
+ (v,s)=(5,1),(7,1),(9,1),(11,1).
+\end{equation}
+
+All eleven cases in \eqref{eq:fiveblockevenexceptions} and
+\eqref{eq:fiveblockoddexceptions} are disposed of without approximating a
+root.  For each case both integer-polynomial pairs
+\[
+ (r_{4v+s},E_{4v+s+2}),\qquad (r_{4v+s},E_{5v+s})
+\]
+are primitive and have degree-preserving reduction with monic gcd $1$ over a
+  finite field.  Modulus $7$ works except for
+  $(v,s,\mathrm{companion})=(5,0,\mathrm{odd}),
+  (5,0,\mathrm{even}),(5,2,\mathrm{even})$, for which modulus $11$ works.
+  The retained certificates contain every Euclidean remainder.
+Gauss's lemma excludes a common zero over $\C$.
+
+It remains to separate the companions on the twelve uniform intervals.  At a
+zero of $r_{4v+s}$, the five next partial-sum terms give
+\begin{align*}
+ r_{4v+s+1}={}&(4v+s+2)t^{4v+s+1}
+ -{3v+s+4\choose3}t^{3v+s+1}\\
+ &+{2v+s+6\choose5}t^{2v+s+1}
+ -{v+s+8\choose7}t^{v+s+1}
+ +{s+10\choose9}t^{s+1}.
+\end{align*}
+After multiplication by $t$, discard the two negative terms.  The two
+$v$-dependent positive terms decrease under $v\mapsto v+2$ on the root
+interval because
+\[
+ \frac{4(v_s+2)+s+2}{4v_s+s+2}\,\beta_s^8<1,\qquad
+ \frac{{2(v_s+2)+s+6\choose5}}{{2v_s+s+6\choose5}}\,\beta_s^4<1.
+\]
+The twelve exact margins give
+\[
+ (4v_s+s+2)\beta_s^{4v_s+s+2}
+ +{2v_s+s+6\choose5}\beta_s^{2v_s+s+2}
+ +{s+10\choose9}\beta_s^{s+2}<1.
+\]
+Consequently $E_{4v+s+2}=1-tr_{4v+s+1}>0$.
+
+For the even event pair, substitute $m=5v+s$ in
+\eqref{eq:evenpartialblocks}.  At $s=1$, partial-sum monotonicity gives
+\[
+ E_{5v+1}>(1+t)^{-1}
+ -t\{P_{2,4v_1}+(1+t)^{-5}+P_{6,2v_1}+(1+t)^{-9}+1\}>0.
+\]
+For $s\in\{3,5,\ldots,23\}$, complementary bounds give
+\begin{align*}
+ E_{5v+s}<{}&\frac{1+t^{5v_s+s+1}}{1+t}\\
+ &-t\{(1+t)^{-3}+P_{4,3v_s+s-1}+(1+t)^{-7}
+             +P_{8,v_s+s-1}+P_{10,s-1}\}<0.
+\end{align*}
+Each displayed bound is root-free with the stated sign on
+$[\alpha_s,\beta_s]$, by exact rational Sturm chains.
+
+We have excluded both pairs for $j<5v$.  The largest corresponding odd event
+index is $11v+2$, and the largest even event index is $12v$.  Advancing by
+the relevant parity proves the theorem.
+\end{proof}
+
+The dependency-free checker verifies $79360$ five-block formulas, $95356$
+parity identities, and $158720$ predecessor-pair identities for all $124$
+odd exponents through $v=251$, together with full modular Euclidean
+certificates for the $22$ finite exceptional pairs.  An independent SymPy
+checker supplies $41$ root-free rational-interval sign certificates and
+recomputes all $22$ modular gcds.  A separate exact reconnaissance through
+$v=47$ records the discovery pattern but is not used to infer the theorem.
+All deterministic outputs use canonical LF bytes; the finite audit windows
+check the algebra, while the proof above is uniform.
+
+\begin{theorem}[Six-block predecessor safe lattice]\label{thm:sixblocks}
+Let $0<t<1/2$, let $v\ge5$ be odd, and let $n>2v$.  If
+\[
+ q_{n-2}(t)=q_{n-v}(t)=0,
+\]
+then
+\[
+ n\ge13v+4\quad\hbox{when $n$ is odd},\qquad
+ n\ge14v+2\quad\hbox{when $n$ is even}.
+\]
+Thus every first coefficient-one escape in Proposition~\ref{prop:oneescape}
+obeys these stronger bounds.
+\end{theorem}
+\begin{proof}
+By Theorem~\ref{thm:fiveblocks}, it remains to exclude
+\eqref{eq:predecessorpairs} for $j=5v+s$, $0\le s<v$.  The sixth geometric
+term gives
+\begin{equation}\label{eq:sixblock}
+ r_{5v+s}=P_{1,5v+s}+P_{3,4v+s}+P_{5,3v+s}
+             +P_{7,2v+s}+P_{9,v+s}+P_{11,s}.
+\end{equation}
+
+We first exclude even $s$.  For
+\[
+ (s,v_0)=(0,23),(2,15),(4,5),(6,7),(8,9)
+\]
+put
+\[
+ M_{s,v_0}=P_{1,5v_0+s}+(1+t)^{-4}+P_{5,3v_0+s}
+ +(1+t)^{-8}+P_{9,v_0+s}+P_{11,s}.
+\]
+Odd partial sums increase with their odd order and even partial sums lie above
+their limits.  Hence $r_{5v+s}>M_{s,v_0}$ for $v\ge v_0$.  Exact rational
+Horner interval enclosures certify $M_{s,v_0}>0$ on $(0,1/2)$ in all five
+cases.  The omitted pairs are
+\begin{equation}\label{eq:sixblockevenexceptions}
+ \{(v,0):5\le v\le21\}\cup\{(v,2):5\le v\le13\},
+ \qquad v\ \hbox{odd}.
+\end{equation}
+
+For every even $s\ge10$, take $v_0=s+1$.  The same lower bound applies.
+Write
+\[
+ A_{11}={s+12\choose11},\quad A_9={2s+11\choose9},\quad
+ A_5={4s+9\choose5},\quad A_1=6s+7.
+\]
+The alternating remainder bounds compare the positive remainder of
+$P_{11,s}$ with the three negative remainders:
+\begin{align*}
+ P_{11,s}-(1+t)^{-12}
+ &\ge A_{11}t^{s+1}\left(1-\frac{s+13}{s+2}t\right),\\
+ (1+t)^{-10}-P_{9,2s+1}&<A_9t^{2s+2},\\
+ (1+t)^{-6}-P_{5,4s+3}&<A_5t^{4s+4},\\
+ (1+t)^{-2}-P_{1,6s+5}&<A_1t^{6s+6}.
+\end{align*}
+It is enough that
+\[
+ \frac{2(s+2)}{s-9}\frac1{A_{11}}
+ \left(\frac{A_9}{2^{s+1}}+\frac{A_5}{2^{3s+3}}
+                         +\frac{A_1}{2^{5s+5}}\right)<1.
+\]
+At $s=10$ the left side is
+$27281522928263929231/81461110059877531648<1$.  Each of its three
+summands decreases under $s\mapsto s+2$; after $s=x+10$, the exact
+numerators of one minus the successive ratios have only positive
+coefficients.  This excludes every even offset outside
+\eqref{eq:sixblockevenexceptions}.
+
+Now let $s$ be odd.  Put $v_1=19$, $v_3=11$, and
+$v_s=s+2$ for $s\ge5$.  Define
+\begin{align*}
+ L_s={}&(1+t)^{-2}+P_{3,4v_s+s}+(1+t)^{-6}
+                  +P_{7,2v_s+s}+(1+t)^{-10}+P_{11,s},\\
+ U_s={}&P_{1,5v_s+s}+(1+t)^{-4}+P_{5,3v_s+s}
+                  +(1+t)^{-8}+P_{9,v_s+s}+P_{11,s}.
+\end{align*}
+Paired increments give $L_s<r_{5v+s}<U_s$ for $v\ge v_s$.
+For odd $s\ge33$, the three negative Taylor remainders in $L_s$ are bounded
+at $t=1/2$ by
+\[
+ {s+12\choose11}2^{-s-1}+{3s+12\choose7}2^{-3s-5}
+                       +{5s+12\choose3}2^{-5s-9}.
+\]
+At $s=33$ this is
+\[
+ \frac{1768483226579352197428635688881857408474171792538535}
+ {2993155353253689176481146537402947624255349848014848}
+ <\frac{421876}{531441}
+ =\sum_{k=0}^{5}\left(\frac23\right)^{2k+2}.
+\]
+All three errors decrease under $s\mapsto s+2$, again by positive-coefficient
+ratio certificates.  Hence $L_s>0$ for every odd $s\ge33$.
+
+The remaining offsets $s=1,3,\ldots,31$ are confined to the following
+rational intervals:
+\[
+\begin{array}{c|rrrrrrrr}
+s&1&3&5&7&9&11&13&15\\ \hline
+\alpha_s&.226&.220&.246&.274&.301&.326&.350&.371\\
+\beta_s &.228&.222&.248&.276&.303&.329&.352&.374
+\end{array}
+\]
+\[
+\begin{array}{c|rrrrrrrr}
+s&17&19&21&23&25&27&29&31\\ \hline
+\alpha_s&.391&.410&.427&.443&.458&.472&.486&.499\\
+\beta_s &.394&.413&.430&.446&.462&.476&.489&.4999
+\end{array}
+\]
+Exact rational interval Horner certificates show $L_s>0$ on
+$(0,\alpha_s]$ and $U_s<0$ on $[\beta_s,1/2)$.  The cases omitted by the
+choices of $v_1$ and $v_3$ are
+\begin{equation}\label{eq:sixblockoddexceptions}
+ \{(v,1):5\le v\le17\}\cup\{(v,3):5\le v\le9\},
+ \qquad v\ \hbox{odd}.
+\end{equation}
+
+Every one of the $24$ cases in
+\eqref{eq:sixblockevenexceptions}--\eqref{eq:sixblockoddexceptions} is
+disposed of algebraically.  For both pairs
+\[
+ (r_{5v+s},E_{5v+s+2}),\qquad(r_{5v+s},E_{6v+s}),
+\]
+the integer polynomials are primitive and have degree-preserving reduction
+with monic gcd $1$ over one of $\mathbb F_2,\mathbb F_3,\mathbb F_5,
+\mathbb F_7$.  The retained $48$ certificates contain every Euclidean
+remainder; Gauss's lemma excludes a common complex zero.
+
+It remains to separate the companions on the $16$ uniform intervals.  At a
+zero of $r_{5v+s}$, the six next terms alternate.  Discarding the three
+negative terms gives
+\begin{align*}
+ t r_{5v+s+1}<&{4v+s+4\choose3}t^{4v+s+2}
+ +{2v+s+8\choose7}t^{2v+s+2}
+ +{s+12\choose11}t^{s+2}.
+\end{align*}
+The two $v$-dependent terms decrease under $v\mapsto v+2$ on each root
+interval, and their exact endpoint sum is strictly below $1$ at $v=v_s$.
+Thus $E_{5v+s+2}=1-tr_{5v+s+1}>0$.
+
+Finally, substitute $m=6v+s$ in~\eqref{eq:evenpartialblocks}.  For $s=1$,
+partial-sum monotonicity gives the positive lower bound
+\begin{align*}
+ E_{6v+1}>{}&\frac{1-t^{6v_1+2}}{1+t}
+ -t\{(1+t)^{-3}+P_{4,4v_1}+(1+t)^{-7}\\
+ &\hspace{43mm}+P_{8,2v_1}+(1+t)^{-11}+1\}>0.
+\end{align*}
+For $s=3,5,\ldots,31$, complementary bounds give
+\begin{align*}
+ E_{6v+s}<&\frac1{1+t}-t\{P_{2,5v_s+s-1}+(1+t)^{-5}
+ +P_{6,3v_s+s-1}\\
+ &\hspace{34mm}+(1+t)^{-9}+P_{10,v_s+s-1}+P_{12,s-1}\}<0.
+\end{align*}
+All $16$ signs hold throughout $[\alpha_s,\beta_s]$ by the retained exact
+interval certificates.  Hence both predecessor pairs are excluded for
+$j<6v$.  The largest odd and even event indices are $13v+2$ and $14v$;
+advancing by parity proves the theorem.
+\end{proof}
+
+The dependency-free checker verifies $95232$ six-block formulas, $111228$
+parity identities, and $190464$ predecessor-pair identities for all $124$ odd
+exponents through $v=251$, together with full modular Euclidean certificates
+for the $48$ finite pairs.  An independent SymPy checker supplies $53$ exact
+rational interval-Horner sign certificates and recomputes all $48$ modular
+gcds.  Both theorem-level JSON outputs replay byte-for-byte.  Exact finite
+reconnaissance through $v=23$ records $89$ roots and constant companion gcds;
+it is discovery evidence only and is not used in the uniform proof.
+
+\begin{remark}[An exact open bottleneck]\label{rem:coprimebottleneck}
+Regard the $q_j$ as polynomials in an indeterminate $t$.  Exact modular gcd
+certificates accompanying this paper prove
+\[
+ \gcd_{\Z[t]}(q_{n-2}(t),q_{n-v}(t))=1
+\]
+for all $876456$ pairs with odd $5\le v\le151$ and $2v<n\le12000$, with no
+unresolved index.  This is finite evidence, not an infinite
+proof.  Theorem~\ref{thm:sixblocks} independently removes every real event
+below its parity-dependent linear thresholds.  Proving the displayed
+coprimality for every odd $v\ge5$ and $n>2v$
+would eliminate the only branch identified by
+Proposition~\ref{prop:oneescape}.  Together with
+Lemma~\ref{lem:pringsheim}, it would settle the entire normalized
+smaller-gap-$2$ trinomial family, without restricting the algebraic degree of
+$a$.
+\end{remark}
+
+We now use the partial sums above to give a finite exact representation of all
+coefficients needed in Lemma~\ref{lem:forcedseries}.
+Expanding~\eqref{eq:forcedseries} first in powers of $x^v$ gives
+\begin{equation}\label{eq:blockexpansion}
+ Q_{a,v}(x)=\frac1{(1-x^2)(1+a x^2)}+
+ \sum_{k\ge1}\frac{(-1)^{k-1}a x^{kv+2}}
+ {(1-x^2)(1+a x^2)^{k+1}}.
+\end{equation}
+Since $v$ is odd, equal parities combine.  For $m\ge0$ this yields
+\begin{align}
+ q_{Kv+2+2m}
+ &=a\sum_{s=0}^{(K-1)/2}P_{K-2s,m+sv}(a), &&K\text{ odd},
+ \label{eq:oddblock}\\
+ q_{Kv+2+2m}
+ &=P_{0,(K/2)v+1+m}(a)
+   -a\sum_{s=0}^{K/2-1}P_{K-2s,m+sv}(a), &&K\text{ even}.
+ \label{eq:evenblock}
+\end{align}
+These identities are formal and exact.
+Keeping the top partial sum fixed and sending odd $v$ to infinity gives
+\begin{equation}\label{eq:blocklimit}
+ L_{K,m}(a)=
+ \begin{cases}
+ aP_{K,m}(a)+a\displaystyle\sum_{\substack{1\le j<K\\j\ \mathrm{odd}}}
+ (1+a)^{-j-1},&K\text{ odd},\\[2mm]
+ (1+a)^{-1}-aP_{K,m}(a)
+ -a\displaystyle\sum_{\substack{2\le j<K\\j\ \mathrm{even}}}
+ (1+a)^{-j-1},&K\text{ even}.
+ \end{cases}
+\end{equation}
+
+For the uniform estimates, if $0<a\le U<1/2$ and
+\[
+ U\frac{k+m+2}{m+2}<1,
+\]
+then the alternating terms after $P_{k,m}$ decrease in magnitude, and
+\begin{equation}\label{eq:tailbound}
+ \left|P_{k,m}(a)-(1+a)^{-k-1}\right|
+ \le {k+m+1\choose m+1}U^{m+1}.
+\end{equation}
+Thus every block has an exact $v\to\infty$ limit, and all terms omitted from
+that limit have explicit rational bounds.  Increasing odd $v$ only decreases
+those bounds once~\eqref{eq:tailbound} applies.
+
+\begin{theorem}[Global cubic exclusion]\label{thm:globalcubic}
+Let $C=A_aB$ be a normalized nonnegative factorization of a Newman polynomial,
+where
+\[
+ A_a(x)=1+a x^2+x^v,\qquad v>2,\qquad a\notin\Z.
+\]
+Then $[\Q(a):\Q]\ne3$.  Consequently, in the smaller-gap-$2$ case every
+genuinely fractional coefficient has algebraic degree at least $4$, without
+any restriction on the product degree.
+\end{theorem}
+\begin{proof}
+Theorem~\ref{thm:divisible} removes even $v$ and the boundary cases; after
+reversal the remaining cases have odd $v\ge5$.  Lemma~\ref{lem:cubiccatalog}
+reduces a cubic coefficient to $126$ exact minimal-polynomial records.
+
+For $v=5,7,\ldots,21$, the verifier works directly in
+$\Z[a]/(m_a)$.  Multiplication by $a$ and the recurrence
+\[
+ q_n=1-aq_{n-2}-q_{n-v}
+\]
+produce a triple of integers for every coefficient.  Rational bisection of
+the unique target root in $(0,1/2)$ separates every sign.  In all $1134$
+catalog--case pairs, the only zero before the first negative coefficient is
+$q_v$ (besides the initial odd zero ray).  The verifier also certifies the
+forcing term $a q_{n-2}+q_{n-v}$ strictly positive at every step, so each
+preceding coefficient is strictly less than $1$.
+
+For every odd $v\ge23$, formulas~\eqref{eq:oddblock} and
+\eqref{eq:evenblock} give a uniform certificate.  Each catalog entry records
+one obstruction index
+\[
+\begin{gathered}
+ N=Kv+r,\qquad K\le27,\\
+ (K,r)\in\{(K,4):K\text{ odd}\}\cup
+ \{(K,6):K\text{ even}\}\cup
+ \{(K,8):K\text{ odd}\}.
+\end{gathered}
+\]
+For a fixed parity, the ranges $0\le m\le v-1$ in consecutive values of $K$
+partition all coefficients after the initial rays.  Proving a complete block
+positive for every $m\ge0$ is therefore stronger than the required statement.
+The base block $K=0$ is elementary:
+\[
+ q_{2+2m}=P_{0,m+1}(a)=\frac{1-(-a)^{m+2}}{1+a}\in(0,1)
+ \qquad(0\le m\le v-1,\ 0<a<1).
+\]
+For every block $K\ge1$, using an outward dyadic interval containing the
+target root, the verifier checks every internal block offset $0\le m\le40$ by
+rational interval arithmetic.  It then uses~\eqref{eq:tailbound} to prove all
+later offsets positive.  All complete blocks before $K$ are positive, as is
+the prefix of block $K$ before $r$; the only preceding noninitial zero is
+$q_v=0$.
+Finally, the same tail estimate proves $q_{Kv+r}<0$ uniformly from $v=23$
+onward.  The weakest retained rational upper margin is less than
+$-2.29\cdot10^{-4}$, while the weakest pre-obstruction lower margin is greater
+than $5.19\cdot10^{-4}$.  These decimals merely summarize exact fractions.
+
+An independent identity checker compares $29193$ coefficients obtained by
+direct formal division with the block expansion at $v=23$.  A second run at
+\mbox{$v=99$} compares $123053$ identities.  A separate rational-specialization
+checker, independent of the cubic quotient arithmetic, compares $9009$ more
+identities.  A stress checker iterates the algebraic recurrence directly for
+all $4914$ pairs with odd $23\le v\le99$, without using the block-limit
+inequalities.  These audits are not needed for the infinite conclusion.
+Lemma~\ref{lem:forcedseries} now supplies the contradiction for every catalog
+entry and every odd $v\ge5$.  Combining with
+Theorem~\ref{thm:noquadratic} proves the asserted degree-at-least-four
+conclusion.
+\end{proof}
+
+\section{Global quartic exclusion for the smaller gap two}
+\label{sec:globalquartic}
+
+The same forced-series mechanism extends one algebraic degree further, but the
+finite arithmetic layer is substantially larger.  The catalog below is
+exhaustive under the conjugate bounds, and every retained sign is certified by
+integer or rational arithmetic.
+
+\begin{lemma}[Uniform quartic catalog]\label{lem:quarticcatalog}
+Suppose that $a\in(0,1/2)$ is a quartic algebraic integer permitted by the
+norm and conjugate restrictions of the smaller-gap-$2$ case.  Then its monic
+minimal polynomial
+\[
+ m_a(T)=T^4+s_3T^3+s_2T^2+s_1T+s_0
+\]
+belongs to an explicit catalog of $6{,}977$ irreducible integer polynomials.
+Five catalog polynomials have two roots in $(0,1/2)$ and all others have one,
+so the catalog contains $6{,}982$ target roots.
+\end{lemma}
+\begin{proof}
+Every conjugate has modulus strictly less than $R=143/50$, every real
+conjugate is greater than $-2$, and the distinguished root satisfies
+$0<a<1/2$.  Vieta's formulas therefore give the integer bounds
+\[
+ |s_3|\le9,\qquad |s_2|\le28,\qquad |s_1|\le35,
+ \qquad |s_0|\le11.
+\]
+For example, $|s_3|<1/2+3R$, and the other inequalities follow by separating
+the elementary symmetric terms that contain $a$ from those that do not.  The
+resulting box contains $1{,}691{,}646$ tuples with $s_0\ne0$.
+
+The verifier applies the strict Schur recursion to
+$50^4m_a((143/50)T)$, leaving $63{,}546$ polynomials whose roots all lie in
+$|z|<R$.  Exact integer linear- and quadratic-factor tests leave $57{,}238$
+irreducibles.  Rational Sturm chains retain $10{,}671$ polynomials having a
+root in $(0,1/2)$ and then remove every polynomial with a real root in
+$(-3,-2]$; the disk bound makes this the entire forbidden real range.  The
+remaining counts are exactly those stated.  The same Sturm chains isolate
+every target root in a rational interval of width at most $2^{-36}$.
+\end{proof}
+
+\begin{theorem}[Global quartic exclusion]\label{thm:globalquartic}
+Let $C=A_aB$ be a normalized nonnegative factorization of a Newman polynomial,
+where
+\[
+ A_a(x)=1+a x^2+x^v,\qquad v>2,\qquad a\notin\Z.
+\]
+Then $[\Q(a):\Q]\ne4$.  Consequently, in the smaller-gap-$2$ case every
+genuinely fractional coefficient has algebraic degree at least $5$, without
+any restriction on the product degree.
+\end{theorem}
+\begin{proof}
+As in Theorem~\ref{thm:globalcubic}, it is enough to consider odd $v\ge5$ and
+the target roots in Lemma~\ref{lem:quarticcatalog}.  For each of the $6{,}982$
+roots and every $v=5,7,\ldots,21$, the verifier iterates
+\[
+ q_n=1-aq_{n-2}-q_{n-v}
+\]
+exactly in $\Z[a]/(m_a)$.  Rational interval evaluation separates every
+algebraic sign.  Across all $62{,}838$ root--exponent pairs, the only
+noninitial zero before the first negative coefficient is $q_v$, and every
+forcing term preceding that negative coefficient is strictly positive.
+
+For odd $v\ge23$, formulas~\eqref{eq:oddblock}--\eqref{eq:tailbound} give a
+uniform certificate.  The expanded obstruction search uses every
+parity-compatible even offset through $100$: offsets divisible by $4$ for odd
+blocks and offsets congruent to $2$ modulo $4$ for even blocks.  Each target
+root has a certified obstruction
+\[
+ N=Kv+r,\qquad K\le110,\qquad r\le100,
+\]
+whose exact limiting upper bound plus its finite-$v$ error is negative.  This
+expanded offset set is essential: restricting to offsets $4$, $6$, and $8$
+can skip an earlier negative coefficient at offset $10$.
+
+For every selected obstruction, a separate exact verifier proves all complete
+preceding blocks positive and also the prefix of the obstruction block before
+$r$.  It evaluates internal offsets $0\le m\le48$ by rational interval
+arithmetic and uses the full-block limit with a first-omitted alternating-tail
+bound for every later offset.  The base block is positive by the formula in
+the proof of Theorem~\ref{thm:globalcubic}.  At every intervening index at
+least one of the two predecessor coefficients is therefore positive; hence
+$a q_{n-2}+q_{n-v}>0$ and $q_n<1$.  Thus the hypotheses of
+Lemma~\ref{lem:forcedseries} hold up to $N$, where the forced coefficient is
+negative.  This contradicts the existence of the normalized nonnegative
+cofactor and excludes every quartic target root.
+\end{proof}
+
+The quartic proof objects retain the ordered minimal-polynomial catalog, both
+target intervals for the five double-target polynomials, every finite
+algebraic sign record, one exact uniform negative-tail certificate per target
+root, and the complete positive-prefix audit.  Floating point is used only to
+order candidate obstruction checks; every accepted inequality is recomputed
+with exact rational endpoints.
+
+For a final independent audit, a second implementation replaces the catalog
+generator's Schur recursion by the Schur--Cohn Hermitian determinant criterion,
+factors every survivor independently with FLINT, and encloses all complex roots
+with Arb.  It reproduces the ordered catalog and independently validates all
+$6{,}982$ retained target intervals.  At $4096$-bit ball precision, a
+separate direct scalar recurrence checks all $62{,}838$ finite root--exponent
+pairs, and an independent
+parity-block implementation checks every retained uniform tail and positive
+prefix certificate.  In total these two sign audits certify $12{,}369{,}079$
+finite coefficient inequalities, $6{,}982$ uniform negative-tail
+certificates, and $4{,}979{,}348$ uniform prefix inequalities, with no
+indeterminate or failed sign.  These audits are redundant: the exact
+rational proof objects remain the proof data used above.
+
+\section{Literature boundary and next problems}
+
+The global degree-exclusion theorems have to be separated from several
+adjacent results.
+Ghidelli proves fairness for $1+a x^2+x^5$ with an arbitrary nonnegative
+cofactor and no product-degree cap~\cite{Ghidelli}.  Consequently the $v=5$
+parts of Theorems~\ref{thm:globalcubic} and~\ref{thm:globalquartic} are
+re-verifications in algebraic degrees $3$ and $4$, not new mathematical cases.
+Ghidelli's proof uses linear recurrences, nonvanishing resultants, and root
+asymptotics for that fixed exponent.  The present parity-block expansion uses
+the arithmetic discreteness of the cubic and quartic catalogs to cover every
+odd exponent uniformly.  Hare's algorithm instead scans candidate-factor
+coefficient patterns of factor degree at most $15$ and eliminates all but
+$975$ among $7{,}141{,}686$ patterns~\cite{Hare}.  That factor-degree
+classification and
+the present unbounded-exponent but fixed algebraic-degree theorems constrain
+different parameters, so neither computation should be described as subsuming
+the other.
+
+There is also a direct integer-divisor literature.  Drungilas, Jankauskas, and
+\v{S}iurys give a finite-state algorithm deciding restricted-coefficient
+multiples for monic integer polynomials without unit-circle zeros and apply it
+to low-degree Borwein polynomials~\cite{DJS}.  Idris and Sac-\'Ep\'ee study
+which integer polynomials divide Newman polynomials, including explicit
+nondivisibility and bounded-multiple computations~\cite{IS}.  Their subsequent
+work gives additional existence and nonexistence results for Newman and
+Littlewood multiples of certain integer polynomials~\cite{IS2}.  These methods
+become relevant here after the conjugate product $H_a$ converts a nonnegative
+real-factor question into an integer Newman-divisor question.  The global cubic
+and quartic proofs instead return to the distinguished real embedding and
+certify the forced cofactor recurrence directly.  The literature sources
+checked did not exhibit the parity-block certificate or an all-odd-$v$ quartic
+exclusion, but that absence is a literature-search inference rather than a
+priority proof.
+
+Up to reversal take $1\le u\le v/2$.  Theorem~\ref{thm:divisible} resolves
+precisely the classes with $u\mid v$.  For every remaining class,
+Theorem~\ref{thm:half} removes $[1/2,1)$ and Theorem~\ref{thm:integral}
+removes rational points.  The norm sieve converts every fixed algebraic degree
+into a finite search.
+
+Three directions remain concrete.  First, Lemma~\ref{lem:pringsheim} already
+gives an eventual negative coefficient for every real $a>0$; to turn that into
+full fairness for the smaller gap two, push the six-block safe lattice beyond
+$j=6v$ or rule out every nonstructural zero pair that could let a finite forced
+cofactor terminate with leading coefficient $1$ before the first negative
+term.
+Second, determine whether the norm sieve and parity-block method remain
+computationally and structurally effective in algebraic degree $5$.  Third,
+organize propagation for smaller gaps
+$u>2$ by residue classes or the continued fraction of $v/u$, and compare
+Theorem~\ref{thm:norm} systematically with general
+results on prescribed Newman divisors, especially the algorithms of Idris and
+Sac-\'Ep\'ee~\cite{IS}.  The current paper proves neither the full conjecture
+nor a counterexample.
+
+\section*{AI research provenance}
+
+This manuscript results from a state-aware autonomous AI Researcher--Critic
+workflow.  During each research iteration, the AI Researcher explored proofs,
+derived symbolic identities, searched for counterexamples, ran exact
+computations, implemented verification programs, surveyed relevant literature,
+and drafted the manuscript.  In separate review iterations, the AI Critic
+checked claims, replayed computations, searched for gaps and edge cases, and
+returned structured feedback for the next Researcher iteration.
+
+The human role was limited to initiating the project, defining the overall
+objective, configuring and supervising the workflow, selecting retained
+outputs, and authorizing release.  The proof arguments, computational searches,
+verification code, critical assessments, and prose were generated primarily by
+the AI workflow and were not independently derived by the human orchestrator.
+The labels ``Researcher'' and ``Critic'' describe workflow roles rather than
+additional authors.
+
+The accompanying repository provides the manuscript source, exact
+computational certificates, verification programs, and integrity manifests so
+that the workflow's mathematical outputs can be inspected and reproduced.
+The complete public workflow record, including the stable automation prompt,
+schedule, version chronology, and retained timing ledger, is provided in
+\texttt{docs/autonomous-research-workflow.md}.
+
+\subsection*{Prompted workflow}
+
+The automation used a two-role, state-aware cycle.  The Researcher prompt
+required at least 300 active minutes of proof work, exact computation,
+counterexample search, and literature checking, with exactly one incremented
+manuscript version created only after material progress.  The Critic prompt
+required at least 60 active minutes of separate review, including computation
+replay, gap and edge-case searches, and severity-ranked feedback; the Critic did
+not edit the manuscript.  Shared rules required hash validation before every
+role claim, prohibited both roles from running in one invocation, preserved
+earlier artifacts, and required selectable-text vector PDFs with visual
+inspection.  The complete operational prompt appears in the workflow record
+cited above.
+
+\subsection*{Schedule, iterations, and time accounting}
+
+Research artifacts span 10--28 July 2026.  The workflow produced 18 numbered
+internal manuscript iterations; the released manuscript is intentionally
+unnumbered.  From 17 July onward, the scheduler started one state-aware worker
+every six hours.  Each invocation selected at most one role from the persisted
+phase.  Researcher iterations required at least five active hours, Critic
+iterations at least one active hour, and every successful handoff ended the
+invocation.
+
+The retained late-stage log records 40.68 hours of Researcher and Critic
+workflow time, including unsuccessful and repeated handoff attempts.  The final
+production-and-review cycle comprised 358.38 Researcher minutes and 65.31
+Critic minutes, or 7.06 hours in total.
+
+\begin{thebibliography}{9}
+\bibitem{Ghidelli}
+L.~Ghidelli,
+\emph{Progress on the unfair $0$--$1$ polynomials conjecture using linear
+recurrences and numerical analysis}, arXiv:2209.09843 (2022),
+\url{https://arxiv.org/abs/2209.09843}.
+
+\bibitem{Hare}
+K.~G.~Hare,
+\emph{Computational progress on the unfair $0$--$1$ polynomial conjecture},
+Experimental Mathematics, advance online publication, 15 July 2025,
+\url{https://doi.org/10.1080/10586458.2025.2527786}.
+
+\bibitem{IS}
+M.~Idris and J.-M.~Sac-\'Ep\'ee,
+\emph{Algorithmic aspects of Newman polynomials and their divisors},
+arXiv:2601.11486 (2026),
+\url{https://arxiv.org/abs/2601.11486}.
+
+\bibitem{IS2}
+M.~Idris and J.-M.~Sac-\'Ep\'ee,
+\emph{On the existence of Newman and Littlewood multiples for certain integer
+polynomials}, arXiv:2607.15520 (2026),
+\url{https://arxiv.org/abs/2607.15520}.
+
+\bibitem{DJS}
+P.~Drungilas, J.~Jankauskas, and J.~\v{S}iurys,
+\emph{On Newman and Littlewood multiples of Borwein polynomials},
+arXiv:1609.07295 (2016),
+\url{https://arxiv.org/abs/1609.07295}.
+
+\bibitem{KR}
+M.~Krasner and B.~Ranulac,
+\emph{Sur une propri\'et\'e des polyn\^omes de la division du cercle},
+Comptes Rendus de l'Acad\'emie des Sciences de Paris \textbf{204} (1937),
+397--399.
+
+\bibitem{OP}
+A.~M.~Odlyzko and B.~Poonen,
+\emph{Zeros of polynomials with $0,1$ coefficients},
+L'Enseignement Math\'ematique \textbf{39} (1993), 317--348.
+\end{thebibliography}
+
+\end{document}
