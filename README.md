@@ -4,6 +4,14 @@ This repository accompanies the manuscript
 *Coefficient Propagation and Conjugate Obstructions for Trinomial Factors of
 Newman Polynomials*.
 
+## Why this project, and my role
+
+I wanted to test whether an AI research workflow could produce a mathematical result that other people could inspect and reproduce.
+
+I initiated the project, supplied the objective, supervised the workflow and selected the retained outputs. AI Researcher and Critic roles produced the exploration, proofs, computation, verification code and manuscript. I did not independently derive every result.
+
+The contribution is the restricted result below and its reproducible evidence, together with a documented account of how it was produced. It is not a solution to the full conjecture or a claim of external peer review. [Workflow and responsibility](docs/autonomous-research-workflow.md).
+
 ## Main result
 
 Consider a normalized factorization of a Newman polynomial into monic
